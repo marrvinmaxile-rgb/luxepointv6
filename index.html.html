@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxe Point V6 — Top Up Robux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a13;
+    --bg-soft:#0d0d18;
+    --surface:#13131f;
+    --surface-2:#1a1a2a;
+    --border:rgba(237,234,226,0.09);
+    --border-strong:rgba(237,234,226,0.16);
+    --gold:#d4af6a;
+    --gold-bright:#f2cd82;
+    --violet:#7c5cff;
+    --violet-soft:#a78bfa;
+    --text:#edeae2;
+    --text-dim:#9c99ac;
+    --text-faint:#5f5c72;
+    --success:#4ade80;
+    --grad-luxe: linear-gradient(120deg, var(--gold) 0%, var(--gold-bright) 45%, var(--violet-soft) 100%);
+    --radius-cut: 18px;
+    --maxw: 1180px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Manrope',sans-serif;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-0.02em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  ::selection{background:var(--gold);color:#0a0a13;}
+  :focus-visible{outline:2px solid var(--gold-bright);outline-offset:3px;border-radius:4px;}
+  .release-ribbon{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;gap:9px;padding:9px 16px;background:linear-gradient(90deg,rgba(124,92,255,.13),rgba(212,175,106,.12),rgba(124,92,255,.13));border-bottom:1px solid var(--border);color:var(--text-dim);font-size:.78rem;text-align:center;}
+  .release-ribbon strong{color:var(--gold-bright);letter-spacing:.06em;text-transform:uppercase;}
+  .release-ribbon .ribbon-dot{width:6px;height:6px;flex:none;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);}
+  @media(max-width:600px){.release-ribbon{font-size:.7rem;padding:8px 12px;gap:7px}}
+  button:disabled{opacity:.55;cursor:not-allowed;}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
+
+  /* faceted cut corner utility */
+  .facet{
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+  }
+  .facet-sm{
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+
+  /* ---------- background ambient ---------- */
+  .ambient{
+    position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+  }
+  .ambient::before, .ambient::after{
+    content:''; position:absolute; border-radius:50%; filter:blur(120px); opacity:0.16;
+  }
+  .ambient::before{ width:520px;height:520px; background:var(--violet); top:-160px; right:-120px; }
+  .ambient::after{ width:460px;height:460px; background:var(--gold); bottom:-140px; left:-100px; }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,10,19,0.72);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; max-width:var(--maxw); margin:0 auto;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px; font-family:'Sora'; font-weight:700; font-size:1.15rem;
+  }
+  .logo-mark{
+    height:38px; width:auto;
+    display:inline-flex; align-items:center; justify-content:center;
+    flex:none;
+  }
+  .logo-mark img{ height:100%; width:auto; display:block; }
+  .logo span{color:var(--gold-bright);}
+  .nav-links{display:flex; align-items:center; gap:0; font-size:0.92rem; color:var(--text-dim);}
+  .nav-links a{ padding:8px 22px; position:relative; transition:color .18s ease;}
+  .nav-links a:not(:last-child)::after{
+    content:''; position:absolute; right:0; top:50%; transform:translateY(-50%);
+    width:1px; height:16px; background:var(--border-strong);
+  }
+  .nav-links a:hover{color:var(--gold-bright);}
+  .nav-cta{
+    display:flex; align-items:center; gap:16px;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 22px; font-weight:600; font-size:0.9rem; cursor:pointer;
+    border:none; font-family:'Manrope';
+    transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  }
+  .btn-primary{
+    background:var(--grad-luxe); color:#0a0a13;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(212,175,106,0.45); }
+  .btn-outline{
+    background:transparent; color:var(--text); border:1px solid var(--border-strong);
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+  .btn-outline:hover{ border-color:var(--gold); color:var(--gold-bright); }
+  .burger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
+  .burger span{width:24px;height:2px;background:var(--text);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; z-index:1;
+    padding:96px 24px 70px;
+    max-width:var(--maxw); margin:0 auto;
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:0.78rem; text-transform:uppercase; letter-spacing:0.14em;
+    color:var(--gold-bright); border:1px solid var(--border-strong);
+    padding:7px 14px; border-radius:100px; margin-bottom:22px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--success); box-shadow:0 0 8px var(--success);}
+  .hero h1{
+    font-size:clamp(2.4rem, 4.2vw, 3.6rem); font-weight:800; line-height:1.08; color:var(--text);
+  }
+  .hero h1 em{font-style:normal; background:var(--grad-luxe); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero p.lead{
+    margin-top:20px; font-size:1.06rem; color:var(--text-dim); max-width:480px;
+  }
+  .hero-actions{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
+  .trust-row{
+    display:flex; gap:28px; margin-top:44px; flex-wrap:wrap;
+  }
+  .trust-row .num{font-family:'JetBrains Mono'; font-weight:600; font-size:1.4rem; color:var(--text);}
+  .trust-row .lbl{font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.06em;}
+
+  /* gem visual */
+  .gem-stage{ position:relative; display:flex; justify-content:center; align-items:center; height:440px; perspective:1000px;}
+  .gem-rotor{ animation: coin-spin 5s linear infinite; transform-style:preserve-3d;}
+  @keyframes coin-spin{ from{transform:rotateY(0deg);} to{transform:rotateY(360deg);} }
+  .gem-glow{
+    position:absolute; width:300px;height:300px; border-radius:50%;
+    background:radial-gradient(circle, rgba(212,175,106,0.25), transparent 70%);
+    filter:blur(10px);
+  }
+  .coin-shine{ animation: shine-sweep 3s ease-in-out infinite; }
+  @keyframes shine-sweep{ 0%,100%{opacity:0.25;} 50%{opacity:0.65;} }
+
+  /* ---------- marquee ---------- */
+  .marquee-section{ border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-soft); padding:22px 0; overflow:hidden; position:relative; z-index:1;}
+  .marquee-track{ display:flex; gap:64px; white-space:nowrap; animation:scroll-left 26s linear infinite; width:max-content;}
+  @keyframes scroll-left{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  .marquee-track span{ font-family:'Sora'; font-weight:600; color:var(--text-faint); font-size:0.95rem; letter-spacing:0.03em;}
+  .marquee-track span b{color:var(--text-dim); font-weight:600;}
+
+  /* ---------- sections generic ---------- */
+  section{ position:relative; z-index:1; padding:88px 24px;}
+  .section-head{ max-width:620px; margin:0 auto 52px; text-align:center;}
+  .section-head .tag{ font-size:0.78rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--gold-bright); font-weight:600; margin-bottom:12px; display:block;}
+  .section-head h2{ font-size:clamp(1.8rem,3vw,2.4rem); color:var(--text);}
+  .section-head p{ color:var(--text-dim); margin-top:14px; font-size:1rem;}
+
+  /* features */
+  .features-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .feature-card{
+    background:var(--surface); border:1px solid var(--border); padding:30px 26px;
+  }
+  .feature-icon{
+    width:46px;height:46px; display:flex; align-items:center; justify-content:center;
+    background:rgba(212,175,106,0.1); color:var(--gold-bright); margin-bottom:18px; font-size:1.3rem;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .feature-card h3{ font-size:1.05rem; margin-bottom:8px; color:var(--text);}
+  .feature-card p{ color:var(--text-dim); font-size:0.92rem;}
+
+  /* stock badge */
+  .stock-badge{
+    max-width:var(--maxw); margin:0 auto 40px; display:flex; align-items:center; justify-content:center; gap:12px;
+    padding:14px 26px; background:var(--surface); border:1px solid var(--border-strong);
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    flex-wrap:wrap; text-align:center;
+  }
+  .stock-badge .dot2{ width:7px;height:7px;border-radius:50%;background:var(--success); box-shadow:0 0 8px var(--success); flex:none;}
+  .stock-badge b{ color:var(--gold-bright); font-family:'JetBrains Mono'; font-weight:600;}
+  .stock-badge span.stock-lbl{ color:var(--text-dim); font-size:0.9rem;}
+
+  /* pricing */
+  .tabs{ display:flex; justify-content:center; gap:10px; margin-bottom:38px; flex-wrap:wrap;}
+  .tab-btn{
+    padding:10px 22px; border:1px solid var(--border-strong); background:transparent; color:var(--text-dim);
+    font-family:'Manrope'; font-weight:600; font-size:0.88rem; cursor:pointer;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    transition:all .18s ease;
+  }
+  .tab-btn.active{ background:var(--grad-luxe); color:#0a0a13; border-color:transparent;}
+  .price-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .price-card{
+    background:var(--surface); border:1px solid var(--border); padding:26px 22px; position:relative;
+    display:flex; flex-direction:column; gap:14px; cursor:pointer; transition:border-color .18s ease, transform .18s ease;
+  }
+  .price-card:hover{ border-color:var(--border-strong); transform:translateY(-4px);}
+  .price-card.selected{ border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset;}
+  .price-card .badge{
+    position:absolute; top:-1px; right:-1px; background:var(--violet); color:#fff; font-size:0.68rem;
+    font-weight:700; padding:5px 12px; letter-spacing:0.04em;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .price-card .rb-amount{ font-family:'JetBrains Mono'; font-weight:600; font-size:1.5rem; color:var(--text);}
+  .price-card .rb-amount span{ font-size:0.85rem; color:var(--text-faint); font-weight:400;}
+  .price-card .rb-old{ font-size:0.82rem; color:var(--text-faint); text-decoration:line-through;}
+  .price-card .rb-price{ font-family:'JetBrains Mono'; font-weight:600; font-size:1.15rem; color:var(--gold-bright);}
+  .price-card .rb-select{
+    margin-top:auto; text-align:center; padding:9px; font-size:0.85rem; font-weight:600;
+    border:1px solid var(--border-strong); color:var(--text-dim);
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .price-card.selected .rb-select{ background:var(--grad-luxe); color:#0a0a13; border-color:transparent;}
+  .instant-layout{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;align-items:start;}
+  .instant-form-card,.payment-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  .instant-tabs{border-bottom:1px solid var(--border);display:flex;}
+  .instant-tab{padding:18px 22px;color:var(--gold-bright);font-weight:800;border-bottom:2px solid var(--gold);font-size:.92rem;}
+  .instant-inner{padding:24px;}
+  .instant-inner h3,.payment-card h3{margin:0 0 18px;font-size:1.05rem;}
+  .instant-inner label,.payment-card label{display:block;font-size:.88rem;margin:14px 0 7px;color:var(--text);}
+  .instant-inner input,.payment-card input{width:100%;background:var(--bg);border:1px solid var(--border-strong);color:var(--text);padding:13px 14px;border-radius:9px;font-family:'Manrope';outline:none;}
+  .custom-amount-title{margin-top:22px;font-weight:800;color:var(--gold-bright);letter-spacing:.02em;}
+  .custom-amount-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .custom-amount-grid small{display:block;color:var(--text-faint);margin-top:7px;}
+  .price-preview{background:var(--bg);border:1px solid var(--border-strong);border-radius:9px;padding:13px 14px;font-family:'JetBrains Mono';color:var(--gold-bright);font-weight:800;min-height:46px;}
+  .notice{margin-top:14px;padding:12px 14px;border:1px solid rgba(242,205,130,.35);background:rgba(242,205,130,.06);border-radius:9px;color:var(--text-dim);font-size:.82rem;}
+  .tutorial-box{margin-top:18px;border:1px solid var(--border);border-radius:10px;padding:13px 15px;background:var(--bg);} .tutorial-box summary{cursor:pointer;color:var(--gold-bright);font-weight:700;} .tutorial-body{padding-top:10px;color:var(--text-dim);font-size:.86rem;line-height:1.7;}
+  .payment-card{padding:24px;position:sticky;top:90px;} .promo-inline{display:grid;grid-template-columns:1fr auto;gap:8px;} .promo-inline button{border:1px solid var(--border-strong);background:transparent;color:var(--gold-bright);padding:10px 14px;border-radius:9px;font-weight:700;} .instant-msg{min-height:18px;font-size:.78rem;color:var(--text-dim);margin-top:7px;}
+  .summary-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;color:var(--text-dim);} .summary-row b{color:var(--text);font-family:'JetBrains Mono';} .summary-total{display:flex;justify-content:space-between;border-top:1px solid var(--border);margin-top:10px;padding-top:15px;font-size:1.08rem;} .summary-total b{font-size:1.45rem;color:var(--gold-bright);font-family:'JetBrains Mono';} .instant-buy-btn{width:100%;margin-top:18px;}
+  @media(max-width:850px){.instant-layout{grid-template-columns:1fr}.payment-card{position:static}.custom-amount-grid{grid-template-columns:1fr}}
+
+  /* how it works */
+  .steps{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; position:relative;}
+  .step{ padding:0 8px;}
+  .step .step-num{ font-family:'JetBrains Mono'; font-size:0.85rem; color:var(--gold-bright); border:1px solid var(--border-strong); width:38px;height:38px; display:flex;align-items:center;justify-content:center; margin-bottom:18px; clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);}
+  .step h4{ font-size:1rem; margin-bottom:8px; color:var(--text);}
+  .step p{ font-size:0.88rem; color:var(--text-dim);}
+
+  /* testimonials */
+  .testi-track{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .testi-card{ background:var(--surface); border:1px solid var(--border); padding:26px; display:flex; flex-direction:column; gap:14px;}
+  .stars{ color:var(--gold-bright); font-size:0.9rem; letter-spacing:2px;}
+  .testi-card p{ color:var(--text-dim); font-size:0.92rem;}
+  .testi-who{ display:flex; align-items:center; gap:10px; margin-top:auto;}
+  .testi-avatar{ width:36px;height:36px; border-radius:50%; background:var(--grad-luxe); flex:none;}
+  .testi-who b{ font-size:0.88rem; color:var(--text); display:block;}
+  .testi-who span{ font-size:0.76rem; color:var(--text-faint);}
+
+  /* testimoni form */
+  .testi-form-wrap{
+    max-width:640px; margin:44px auto 0; background:var(--surface); border:1px solid var(--border); padding:36px;
+  }
+  .testi-form-wrap h4{ font-size:1.1rem; color:var(--text); margin-bottom:6px;}
+  .testi-form-wrap .sub{ font-size:0.86rem; color:var(--text-dim); margin-bottom:24px;}
+  .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+  .form-field{ display:flex; flex-direction:column; gap:6px;}
+  .form-field.full{ grid-column:1 / -1;}
+  .form-field label{ font-size:0.82rem; color:var(--text-dim); font-weight:600;}
+  .form-field input, .form-field textarea{
+    background:var(--bg); border:1px solid var(--border-strong); color:var(--text);
+    padding:11px 14px; font-family:'Manrope'; font-size:0.9rem;
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .form-field input::placeholder, .form-field textarea::placeholder{ color:var(--text-faint);}
+  .form-field textarea{ resize:vertical; min-height:90px; font-family:'Manrope';}
+  .testi-form-note{ font-size:0.78rem; color:var(--text-faint); margin-top:14px;}
+  .testi-form-success{ display:none; margin-top:16px; font-size:0.86rem; color:var(--success);}
+
+  /* faq */
+  .faq-list{ max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:12px;}
+  .faq-item{ border:1px solid var(--border); background:var(--surface);}
+  .faq-q{ display:flex; align-items:center; justify-content:space-between; padding:18px 22px; cursor:pointer; font-family:'Sora'; font-weight:600; font-size:0.95rem;}
+  .faq-q .plus{ font-family:'JetBrains Mono'; color:var(--gold-bright); transition:transform .25s ease; font-size:1.1rem;}
+  .faq-item.open .plus{ transform:rotate(45deg);}
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .3s ease; padding:0 22px;}
+  .faq-a p{ color:var(--text-dim); font-size:0.9rem; padding-bottom:18px;}
+
+  /* cta banner */
+  .cta-banner{
+    max-width:var(--maxw); margin:0 auto; background:var(--surface-2); border:1px solid var(--border-strong);
+    padding:56px 48px; display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap;
+  }
+  .cta-banner h3{ font-size:1.7rem; color:var(--text); max-width:440px;}
+  .cta-banner p{ color:var(--text-dim); margin-top:10px; max-width:440px; font-size:0.94rem;}
+
+  /* footer */
+  footer{ border-top:1px solid var(--border); padding:56px 24px 28px; position:relative; z-index:1;}
+  .footer-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px;}
+  .footer-grid h5{ font-size:0.85rem; color:var(--text); margin-bottom:16px;}
+  .footer-grid ul{ list-style:none; display:flex; flex-direction:column; gap:10px;}
+  .footer-grid ul a{ color:var(--text-dim); font-size:0.88rem;}
+  .footer-grid ul a:hover{ color:var(--gold-bright);}
+  .footer-bottom{ max-width:var(--maxw); margin:40px auto 0; display:flex; justify-content:space-between; padding-top:22px; border-top:1px solid var(--border); font-size:0.8rem; color:var(--text-faint); flex-wrap:wrap; gap:10px;}
+
+  /* sticky order bar */
+  .order-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:60;
+    background:rgba(19,19,31,0.92); backdrop-filter:blur(16px);
+    border-top:1px solid var(--border-strong);
+    transform:translateY(120%); transition:transform .35s ease;
+    padding:16px 24px;
+  }
+  .order-bar.show{ transform:translateY(0);}
+  .order-bar-inner{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:auto minmax(190px,220px) minmax(250px,1fr) auto; align-items:center; gap:12px 16px;}
+  .order-info{ display:flex; align-items:center; gap:14px;}
+  .order-info .rb-amount{font-family:'JetBrains Mono'; font-weight:600; color:var(--text); font-size:1.05rem;}
+  .order-info .rb-price{font-family:'JetBrains Mono'; color:var(--gold-bright); font-weight:600;}
+  .order-bar input{
+    background:var(--bg); border:1px solid var(--border-strong); color:var(--text); padding:10px 14px; font-family:'Manrope';
+    font-size:0.88rem; width:200px;
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .order-bar input::placeholder{ color:var(--text-faint);}
+  .order-actions{ display:flex; gap:12px; align-items:center;}
+  .promo-box{display:flex;flex-direction:column;gap:4px;min-width:250px;}
+  .promo-label{font-size:.72rem;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+  .promo-row{ display:flex; align-items:center; gap:8px;}
+  .promo-row input{ width:170px; text-transform:uppercase;}
+  .promo-row input.applied{ border-color:var(--success); color:var(--success);}
+  .promo-apply-btn{
+    background:transparent; border:1px solid var(--border-strong); color:var(--text-dim);
+    padding:10px 16px; font-family:'Manrope'; font-size:0.82rem; font-weight:600; cursor:pointer;
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+    transition:border-color .18s ease, color .18s ease;
+  }
+  .promo-apply-btn:hover{ border-color:var(--gold); color:var(--gold-bright); }
+  .promo-msg{ font-size:0.78rem; margin-top:6px; min-height:14px;}
+  .promo-msg.ok{ color:var(--success);}
+  .promo-msg.err{ color:#f87171;}
+  .rb-price-old-inline{ color:var(--text-faint); text-decoration:line-through; font-size:0.85rem; margin-right:6px; font-weight:400;}
+  @media (max-width:1100px){ .order-bar-inner{grid-template-columns:1fr 1fr;}.promo-box{min-width:0;}.order-actions{justify-content:flex-end;} }
+  @media (max-width:720px){ .promo-row input{ width:100%;} .order-bar-inner{grid-template-columns:1fr;} .order-actions{justify-content:stretch;} .promo-box{width:100%;} }
+
+  /* floating WhatsApp CS button */
+  .wa-float{
+    position:fixed; right:24px; bottom:24px; z-index:70;
+    width:56px; height:56px; display:flex; align-items:center; justify-content:center;
+    background:#25D366; color:#0a0a13; box-shadow:0 10px 30px -6px rgba(37,211,102,0.55);
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+    animation: wa-pop .4s ease;
+    transition: transform .18s ease;
+  }
+  .wa-float:hover{ transform:translateY(-3px) scale(1.04); }
+  .wa-float svg{ width:28px; height:28px; }
+  @keyframes wa-pop{ from{ transform:scale(0.6); opacity:0;} to{ transform:scale(1); opacity:1;} }
+  @media (max-width:720px){ .wa-float{ right:16px; bottom:88px; width:50px; height:50px; } .wa-float svg{ width:24px;height:24px; } }
+
+  /* reveal animation */
+  [data-reveal]{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  [data-reveal].in-view{ opacity:1; transform:translateY(0);}
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px){
+    .hero{ grid-template-columns:1fr; padding-top:120px;}
+    .gem-stage{ height:280px; order:-1;}
+    .features-grid{ grid-template-columns:repeat(2,1fr);}
+    .price-grid{ grid-template-columns:repeat(2,1fr);}
+    .steps{ grid-template-columns:repeat(2,1fr); row-gap:34px;}
+    .testi-track{ grid-template-columns:1fr;}
+    .footer-grid{ grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width: 720px){
+    .nav-links a{ padding:12px 4px;}
+    .nav-links a::after{ display:none;}
+    .nav-links{ display:none;}
+    .burger{ display:flex;}
+    .nav-cta .btn-outline{ display:none;}
+    .features-grid, .price-grid, .steps{ grid-template-columns:1fr;}
+    .cta-banner{ padding:38px 26px;}
+    .order-bar input{ width:100%;}
+    .order-bar-inner{ flex-direction:column; align-items:stretch;}
+    .order-actions{ justify-content:stretch;}
+    .order-actions .btn{ flex:1;}
+  }
+
+  .track-section{background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .track-box{max-width:640px;margin:0 auto;background:var(--surface);border:1px solid var(--border-strong);padding:30px 26px;}
+  .track-row{display:flex;gap:10px;margin-top:18px;}
+  .track-row input{flex:1;background:var(--bg);border:1px solid var(--border-strong);color:var(--text);padding:12px 14px;border-radius:8px;font-family:'Manrope';text-transform:uppercase;}
+  .track-result{margin-top:16px;display:none;border:1px solid var(--border);background:var(--bg);padding:18px;border-radius:10px;}
+  .track-result.show{display:block;}
+  .track-status{display:inline-block;padding:7px 11px;border-radius:100px;border:1px solid var(--border-strong);font-size:.82rem;color:var(--gold-bright);margin-bottom:12px;}
+  .track-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .track-item{padding:10px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;}
+  .track-item span{display:block;color:var(--text-faint);font-size:.75rem;margin-bottom:3px;}
+  .track-item b{font-size:.9rem;}
+  .track-error{color:#f87171;margin-top:12px;font-size:.84rem;display:none;}
+  .invoice-wrap{margin-top:16px;padding:18px;border:1px solid var(--border-strong);background:linear-gradient(180deg,rgba(242,205,130,.06),rgba(255,255,255,.015));border-radius:12px;display:none;}
+  .invoice-wrap.show{display:block;}
+  .invoice-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .invoice-head h3{margin:0;font-size:1.05rem;}
+  .invoice-expiry{font-size:.78rem;color:var(--gold-bright);text-align:right;}
+  .invoice-expiry.warn{color:#facc15;}
+  .invoice-expiry.danger{color:#fb7185;}
+  .invoice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .invoice-item{padding:10px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;}
+  .invoice-item span{display:block;color:var(--text-faint);font-size:.74rem;margin-bottom:3px;}
+  .invoice-item b{font-size:.88rem;word-break:break-word;}
+  .invoice-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .invoice-note{font-size:.75rem;color:var(--text-faint);margin-top:10px;line-height:1.5;}
+  @media(max-width:600px){.invoice-grid{grid-template-columns:1fr}.invoice-head{flex-direction:column}.invoice-expiry{text-align:left}}
+  @media(max-width:600px){.track-row{flex-direction:column}.track-grid{grid-template-columns:1fr;}}
+  /* pricing */
+  .tabs{ display:flex; justify-content:center; gap:10px; margin-bottom:38px; flex-wrap:wrap;}
+  .tab-btn{
+    padding:10px 22px; border:1px solid var(--border-strong); background:transparent; color:var(--text-dim);
+    font-family:'Manrope'; font-weight:600; font-size:0.88rem; cursor:pointer;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    transition:all .18s ease;
+  }
+  .tab-btn.active{ background:var(--grad-luxe); color:#0a0a13; border-color:transparent;}
+  .price-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .price-card{
+    background:var(--surface); border:1px solid var(--border); padding:26px 22px; position:relative;
+    display:flex; flex-direction:column; gap:14px; cursor:pointer; transition:border-color .18s ease, transform .18s ease;
+  }
+  .price-card:hover{ border-color:var(--border-strong); transform:translateY(-4px);}
+  .price-card.selected{ border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset;}
+  .price-card .badge{
+    position:absolute; top:-1px; right:-1px; background:var(--violet); color:#fff; font-size:0.68rem;
+    font-weight:700; padding:5px 12px; letter-spacing:0.04em;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .price-card .rb-amount{ font-family:'JetBrains Mono'; font-weight:600; font-size:1.5rem; color:var(--text);}
+  .price-card .rb-amount span{ font-size:0.85rem; color:var(--text-faint); font-weight:400;}
+  .price-card .rb-old{ font-size:0.82rem; color:var(--text-faint); text-decoration:line-through;}
+  .price-card .rb-price{ font-family:'JetBrains Mono'; font-weight:600; font-size:1.15rem; color:var(--gold-bright);}
+  .price-card .rb-select{
+    margin-top:auto; text-align:center; padding:9px; font-size:0.85rem; font-weight:600;
+    border:1px solid var(--border-strong); color:var(--text-dim);
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .price-card.selected .rb-select{ background:var(--grad-luxe); color:#0a0a13; border-color:transparent;}
+
+
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="release-ribbon"><span class="ribbon-dot"></span><strong>Luxe Point V6</strong><span>Top up Robux · Pilih Gamepass atau Instant Username dengan proses pemesanan yang lebih mudah</span></div>
+
+<header>
+  <nav>
+    <div class="logo"><span class="logo-mark"><img src="data:image/png;base64,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" alt="Luxe Point"></span>LUXE <span>POINT</span></div>
+    <div class="nav-links">
+      <a href="#produk">Produk</a>
+      <a href="#cara-order">Cara Order</a>
+      <a href="#testimoni">Testimoni</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#produk" class="btn btn-outline">Cek Harga</a>
+      <a href="#produk" class="btn btn-primary">Order Sekarang</a>
+    </div>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div data-reveal>
+    <div class="eyebrow"><span class="dot"></span> Layanan Online · Proses Rata-Rata 5 Menit</div>
+    <h1>Top up Robux jadi <em>secerah berlian</em>, secepat kilat.</h1>
+    <p class="lead">Luxe Point melayani top up Robux termurah dan terpercaya untuk seluruh pemain Roblox Indonesia. Aman, transparan, tanpa perlu login password.</p>
+    <div class="hero-actions">
+      <a href="#produk" class="btn btn-primary">Lihat Paket Robux</a>
+      <a href="#cara-order" class="btn btn-outline">Cara Order →</a>
+    </div>
+    <div class="trust-row">
+      <div><div class="num">128.400+</div><div class="lbl">Transaksi Sukses</div></div>
+      <div><div class="num">4.9 / 5</div><div class="lbl">Rating Pelanggan</div></div>
+      <div><div class="num">24/7</div><div class="lbl">CS Siap Bantu</div></div>
+    </div>
+  </div>
+  <div class="gem-stage">
+    <div class="gem-glow"></div>
+    <div class="gem-rotor">
+      <svg width="320" height="320" viewBox="0 0 320 320" fill="none">
+        <defs>
+          <linearGradient id="coinFace" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f2cd82"/>
+            <stop offset="55%" stop-color="#d4af6a"/>
+            <stop offset="100%" stop-color="#b98f4a"/>
+          </linearGradient>
+          <radialGradient id="coinRim" cx="50%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#fff3d6" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#fff3d6" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="160" cy="160" r="130" fill="url(#coinFace)"/>
+        <circle cx="160" cy="160" r="130" fill="url(#coinRim)"/>
+        <circle cx="160" cy="160" r="130" fill="none" stroke="#0a0a13" stroke-opacity="0.18" stroke-width="6"/>
+        <circle cx="160" cy="160" r="106" fill="none" stroke="#0a0a13" stroke-opacity="0.16" stroke-width="2"/>
+        <path d="M160 84 L214 128 L192 236 L128 236 L106 128 Z" fill="#0a0a13" opacity="0.87"/>
+        <path class="coin-shine" d="M160 84 L214 128 L160 148 Z" fill="#ffffff" opacity="0.4"/>
+        <text x="160" y="292" text-anchor="middle" font-family="Sora, sans-serif" font-weight="700" font-size="22" letter-spacing="4" fill="var(--text)" opacity="0.75">ROBUX</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span>Dibayar via <b>QRIS</b></span>
+    <span>Dibayar via <b>DANA</b></span>
+    <span>Dibayar via <b>OVO</b></span>
+    <span>Dibayar via <b>ShopeePay</b></span>
+    <span>Dibayar via <b>GoPay</b></span>
+    <span>Dibayar via <b>Indomaret</b></span>
+    <span>Dibayar via <b>Alfamart</b></span>
+    <span>Dibayar via <b>Transfer Bank</b></span>
+    <span>Dibayar via <b>QRIS</b></span>
+    <span>Dibayar via <b>DANA</b></span>
+    <span>Dibayar via <b>OVO</b></span>
+    <span>Dibayar via <b>ShopeePay</b></span>
+    <span>Dibayar via <b>GoPay</b></span>
+    <span>Dibayar via <b>Indomaret</b></span>
+    <span>Dibayar via <b>Alfamart</b></span>
+    <span>Dibayar via <b>Transfer Bank</b></span>
+  </div>
+</div>
+
+<section id="kenapa">
+  <div class="section-head" data-reveal>
+    <span class="tag">Kenapa Luxe Point</span>
+    <h2>Setiap poin, diproses dengan presisi.</h2>
+    <p>Kami membangun Luxe Point untuk pemain yang ingin top up tanpa drama — jelas harganya, jelas prosesnya.</p>
+  </div>
+  <div class="features-grid" data-reveal>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Proses Instan</h3>
+      <p>Robux otomatis diproses dalam hitungan menit setelah pembayaran terkonfirmasi.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💎</div>
+      <h3>Harga Transparan</h3>
+      <p>Tidak ada biaya tersembunyi. Harga yang tertera adalah harga akhir yang kamu bayar.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Tanpa Login Password</h3>
+      <p>Top up hanya perlu username, tanpa perlu memberikan akses akun Roblox kamu.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧾</div>
+      <h3>Pembayaran Lengkap</h3>
+      <p>QRIS, e-wallet, minimarket, hingga transfer bank — pilih yang paling nyaman.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛟</div>
+      <h3>Garansi Proses</h3>
+      <p>Jika Robux belum masuk sesuai estimasi, tim kami akan menindaklanjuti pesananmu.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>CS Responsif 24/7</h3>
+      <p>Punya kendala? Tim support siap membantu setiap hari, kapan pun kamu butuh.</p>
+    </div>
+  </div>
+</section>
+
+<section id="produk">
+  <div class="section-head" data-reveal>
+    <span class="tag">Daftar Paket</span>
+    <h2>Pilih metode Robux kamu.</h2>
+    <p>Tersedia Robux Gamepass (5 hari, harga lebih hemat) dan Robux Instant via Username (proses lebih cepat).</p>
+  </div>
+  <div class="stock-badge" data-reveal>
+    <span class="dot2"></span>
+    <span class="stock-lbl">Stok Robux tersedia saat ini:</span>
+    <b id="stockAmount">0 Robux</b>
+  </div>
+
+  <div class="tabs" data-reveal>
+    <button class="tab-btn active" data-method-tab="gamepass">Robux Gamepass · 5 Hari</button>
+    <button class="tab-btn" data-method-tab="instant">⚡ Robux Instant</button>
+  </div>
+
+  <div id="gamepassPanel" class="method-panel">
+    <div class="price-grid" id="gamepassGrid" data-reveal></div>
+    <p id="gamepassLoadMsg" style="max-width:var(--maxw);margin:18px auto 0;color:var(--text-dim);text-align:center;"></p>
+  </div>
+
+  <div id="instantPanel" class="method-panel" style="display:none;">
+    <div class="instant-layout" data-reveal>
+      <div class="instant-form-card">
+        <div class="instant-tabs"><div class="instant-tab active">⚡ ROBUX INSTANT VIA USERNAME</div></div>
+        <div class="instant-inner">
+          <h3>Detail Information</h3>
+          <label for="instantUsername">Username Roblox</label>
+          <input id="instantUsername" type="text" maxlength="30" placeholder="Contoh: ExcelFebriano">
+          <div class="custom-amount-grid">
+            <div><label for="instantRobux">Jumlah Robux</label><input id="instantRobux" type="number" min="10" step="10" value="100"><small id="instantAmountMsg">Minimal 10 Robux, kelipatan 10.</small></div>
+            <div><label>Estimasi harga</label><div class="price-preview" id="instantPricePreview">Rp 16.750</div></div>
+          </div>
+          <label for="instantWhatsapp">Nomor WhatsApp <span style="color:var(--text-faint);font-weight:400;">(opsional)</span></label>
+          <input id="instantWhatsapp" type="text" inputmode="numeric" placeholder="Boleh dikosongkan">
+          <div class="notice-box">Untuk Roblox Kids / Roblox Select, pastikan akun sudah memiliki email pemulihan orang tua untuk mengklaim Robux.</div>
+          <div class="notice-box">Order akan diproses melalui WhatsApp admin. Simpan Order ID yang muncul setelah pemesanan.</div>
+          <details class="tutorial-details"><summary>Tutorial Robux Instant via Username</summary><div class="tutorial-body"><ol><li>Masukkan username Roblox yang benar.</li><li>Masukkan jumlah Robux, minimal 10 dan kelipatan 10.</li><li>Nomor WhatsApp boleh dikosongkan.</li><li>Klik Beli Sekarang dan lanjutkan chat ke WhatsApp admin.</li><li>Simpan Order ID untuk cek status dan invoice.</li></ol></div></details>
+        </div>
+      </div>
+      <div class="payment-card">
+        <h3>Payment Summary</h3>
+        <label for="instantPromo">Discount Coupon</label>
+        <div class="promo-inline"><input id="instantPromo" placeholder="Enter Code Here"><button id="instantPromoApply">Submit</button></div>
+        <div id="instantPromoMsg" class="instant-msg"></div>
+        <div class="summary-row"><span>Harga Dasar</span><b id="sumSubtotal">Rp 15.000</b></div>
+        <div class="summary-row"><span>Discount</span><b id="sumDiscount">Rp 0</b></div>
+        <div class="summary-row"><span>PPN (11%)</span><b id="sumTax">Rp 1.650</b></div>
+        <div class="summary-row"><span>Biaya Admin</span><b id="sumAdmin">Rp 100</b></div>
+        <div class="summary-total"><span>Total</span><b id="sumTotal">Rp 16.750</b></div>
+        <button class="btn btn-primary instant-buy-btn" id="instantBuy">Beli Sekarang →</button>
+      </div>
+    </div>
+    <p id="instantLoadMsg" style="max-width:var(--maxw);margin:18px auto 0;color:var(--text-dim);text-align:center;"></p>
+  </div>
+</section>
+
+<section id="cara-order" style="background:var(--bg-soft);">
+  <div class="section-head" data-reveal>
+    <span class="tag">Cara Order</span>
+    <h2>Empat langkah menuju Robux kamu.</h2>
+  </div>
+  <div class="steps" data-reveal>
+    <div class="step"><div class="step-num">01</div><h4>Pilih Paket</h4><p>Tentukan sendiri jumlah Robux untuk top up instan via username.</p></div>
+    <div class="step"><div class="step-num">02</div><h4>Isi Data</h4><p>Masukkan username Roblox. Nomor WhatsApp bersifat opsional.</p></div>
+    <div class="step"><div class="step-num">03</div><h4>Bayar</h4><p>Selesaikan pembayaran lewat QRIS, e-wallet, atau minimarket.</p></div>
+    <div class="step"><div class="step-num">04</div><h4>Robux Masuk</h4><p>Tim kami memproses pesanan dan mengonfirmasi via WhatsApp.</p></div>
+  </div>
+</section>
+
+<section id="cek-status" class="track-section" style="padding:72px 24px;">
+  <div class="track-box">
+    <div class="eyebrow"><span class="dot"></span> ORDER TRACKING</div>
+    <h2 style="margin-top:8px;">Cek status pesanan kamu.</h2>
+    <p style="color:var(--text-dim);margin-top:8px;">Masukkan Order ID yang kamu dapat setelah melakukan order.</p>
+    <div class="track-row">
+      <input id="trackOrderId" placeholder="Contoh: LP-20260906-ABCDE">
+      <button class="btn btn-primary" id="trackBtn">Cek Status →</button>
+    </div>
+    <div id="trackError" class="track-error"></div>
+    <div id="trackResult" class="track-result">
+      <div id="trackStatus" class="track-status">-</div>
+      <div class="track-grid">
+        <div class="track-item"><span>Order ID</span><b id="trackCode">-</b></div>
+        <div class="track-item"><span>Username Roblox</span><b id="trackUsername">-</b></div>
+        <div class="track-item"><span>Robux</span><b id="trackRobux">-</b></div>
+        <div class="track-item"><span>Total</span><b id="trackPrice">-</b></div>
+        <div class="track-item"><span>PPN</span><b id="trackTax">-</b></div>
+        <div class="track-item"><span>Biaya Admin</span><b id="trackAdmin">-</b></div>
+        <div class="track-item"><span>Promo</span><b id="trackPromo">-</b></div>
+        <div class="track-item"><span>Dibuat</span><b id="trackCreated">-</b></div>
+      </div>
+      <div id="invoiceWrap" class="invoice-wrap">
+        <div class="invoice-head">
+          <div><h3>🧾 Invoice Pesanan</h3><div style="color:var(--text-dim);font-size:.78rem;margin-top:3px;">Invoice dapat dilihat selama 2 hari sejak order dibuat.</div></div>
+          <div id="invoiceExpiry" class="invoice-expiry">-</div>
+        </div>
+        <div class="invoice-grid">
+          <div class="invoice-item"><span>Invoice / Order ID</span><b id="invoiceCode">-</b></div>
+          <div class="invoice-item"><span>Produk</span><b id="invoiceProduct">-</b></div>
+          <div class="invoice-item"><span>Username Roblox</span><b id="invoiceUsername">-</b></div>
+          <div class="invoice-item"><span>Jumlah Robux</span><b id="invoiceRobux">-</b></div>
+          <div class="invoice-item"><span>Harga Dasar</span><b id="invoiceOriginal">-</b></div>
+          <div class="invoice-item"><span>Diskon</span><b id="invoiceDiscount">-</b></div>
+          <div class="invoice-item"><span>PPN 11%</span><b id="invoiceTax">-</b></div>
+          <div class="invoice-item"><span>Biaya Admin</span><b id="invoiceAdmin">-</b></div>
+          <div class="invoice-item"><span>Total Dibayar</span><b id="invoiceTotal">-</b></div>
+          <div class="invoice-item"><span>Status</span><b id="invoiceStatus">-</b></div>
+        </div>
+        <div class="invoice-actions"><button class="btn btn-primary" id="printInvoice">🖨️ Cetak / Simpan PDF</button></div>
+        <p class="invoice-note">⚠️ Invoice otomatis tidak dapat diakses lagi setelah 48 jam dari waktu order dibuat. Data order di dashboard admin tetap tersimpan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimoni">
+  <div class="section-head" data-reveal>
+    <span class="tag">Testimoni</span>
+    <h2>Kata mereka yang sudah order.</h2>
+  </div>
+  <div class="testi-track" data-reveal>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Order jam 9 malam, jam 9 lebih 10 Robux udah masuk ke akun anakku. Prosesnya rapi banget."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Dimas P.</b><span>Jakarta</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Harganya paling masuk akal dibanding tempat lain yang aku bandingkan. CS-nya juga fast respon."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Salsa R.</b><span>Bandung</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Suka karena nggak perlu login password akun. Bayar via Alfamart juga bisa, praktis."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Fajar A.</b><span>Surabaya</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Udah langganan dari bulan lalu buat top up anak-anak squad Roblox aku. Nggak pernah gagal."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Bagus W.</b><span>Yogyakarta</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★☆</div>
+      <p>"Robuxnya masuk sesuai janji. Cuma pas malam minggu agak lama balesnya, mungkin lagi rame."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Nabila K.</b><span>Semarang</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Paket gamepass lumayan hemat buat beli Robux jumlah besar. Worth nunggu 5 harinya."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Reza F.</b><span>Medan</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Baru pertama kali coba, agak was-was, ternyata aman dan prosesnya jelas dari awal sampai akhir."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Citra M.</b><span>Denpasar</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Order pakai QRIS langsung dikonfirmasi, nggak perlu upload bukti transfer segala. Simpel banget."</p>
+      <div class="testi-who"><div class="testi-avatar"></div><div><b>Yusuf H.</b><span>Makassar</span></div></div>
+    </div>
+  </div>
+
+  <div class="testi-form-wrap" data-reveal>
+    <h4>Sudah belanja di Luxe Point?</h4>
+    <p class="sub">Tulis testimoni kamu di sini. Testimoni akan dikirim ke tim kami dan ditampilkan setelah diverifikasi.</p>
+    <form id="testiForm">
+      <div class="form-row">
+        <div class="form-field full">
+          <label for="tfOrderId">Nomor Pesanan / Order ID <span style="color:var(--gold-bright); font-weight:400;">(wajib, didapat setelah order via WhatsApp)</span></label>
+          <input type="text" id="tfOrderId" placeholder="Contoh: LP-20260721-0342" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label for="tfName">Nama Kamu</label>
+          <input type="text" id="tfName" placeholder="Contoh: Rafi S." required>
+        </div>
+        <div class="form-field">
+          <label for="tfProduct">Produk yang Dibeli</label>
+          <input type="text" id="tfProduct" placeholder="Masukkan Order ID terlebih dahulu" readonly required>
+          <small id="tfProductMsg" style="display:block;color:var(--text-faint);margin-top:6px;">Produk akan terisi otomatis setelah Order ID diverifikasi.</small>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field full">
+          <label for="tfRating">Rating Pembelian</label>
+          <select id="tfRating" required>
+            <option value="">Pilih rating</option>
+            <option value="5">★★★★★ — Sangat puas</option>
+            <option value="4">★★★★☆ — Puas</option>
+            <option value="3">★★★☆☆ — Cukup</option>
+            <option value="2">★★☆☆☆ — Kurang</option>
+            <option value="1">★☆☆☆☆ — Sangat kurang</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field full">
+          <label for="tfReview">Ulasan Kamu</label>
+          <textarea id="tfReview" placeholder="Ceritakan pengalaman order kamu di Luxe Point..." required></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Kirim Rating & Testimoni</button>
+      <p class="testi-form-note">Order ID dipakai untuk memverifikasi pembelian. Rating hanya dapat dikirim untuk order yang sudah selesai dan satu order hanya bisa memberi satu rating.</p>
+      <p class="testi-form-success" id="tfSuccess">Terima kasih! Testimoni kamu sudah terkirim ke tim kami. ✓</p>
+    </form>
+  </div>
+</section>
+
+<div id="approvedRatings" style="max-width:var(--maxw);margin:28px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
+
+<section id="faq" style="background:var(--bg-soft);">
+  <div class="section-head" data-reveal>
+    <span class="tag">FAQ</span>
+    <h2>Pertanyaan yang sering ditanyakan.</h2>
+  </div>
+  <div class="faq-list" data-reveal>
+    <div class="faq-item">
+      <div class="faq-q">Berapa lama proses Robux masuk? <span class="plus">+</span></div>
+      <div class="faq-a"><p>Robux diproses setelah pembayaran dan konfirmasi melalui WhatsApp admin. Estimasi proses mengikuti kondisi layanan saat order.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Apakah saya perlu memberikan password akun? <span class="plus">+</span></div>
+      <div class="faq-a"><p>Tidak. Luxe Point hanya membutuhkan username Roblox kamu, tanpa perlu login atau membagikan password sama sekali.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Metode pembayaran apa saja yang tersedia? <span class="plus">+</span></div>
+      <div class="faq-a"><p>QRIS, DANA, OVO, GoPay, ShopeePay, Indomaret, Alfamart, dan transfer bank.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Bagaimana jika Robux belum masuk sesuai estimasi? <span class="plus">+</span></div>
+      <div class="faq-a"><p>Hubungi tim CS kami melalui WhatsApp dengan menyertakan nomor pesanan, dan kami akan segera menindaklanjuti prosesnya.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="cta-banner" data-reveal>
+    <div>
+      <h3>Siap top up Robux hari ini?</h3>
+      <p>Isi username, tentukan jumlah Robux, lalu lanjutkan order ke WhatsApp admin.</p>
+    </div>
+    <a href="#produk" class="btn btn-primary">Order Sekarang</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="logo" style="margin-bottom:14px;"><span class="logo-mark"><img src="data:image/png;base64,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" alt="Luxe Point"></span>LUXE <span>POINT</span></div>
+      <p style="color:var(--text-dim); font-size:0.88rem; max-width:280px;">Platform top up Robux terpercaya untuk pemain Roblox di seluruh Indonesia.</p>
+    </div>
+    <div>
+      <h5>Navigasi</h5>
+      <ul>
+        <li><a href="#produk">Produk</a></li>
+        <li><a href="#cara-order">Cara Order</a></li>
+        <li><a href="#testimoni">Testimoni</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Bantuan</h5>
+      <ul>
+        <li><a href="https://wa.me/6289519781533?text=Halo%20Luxe%20Point%2C%20saya%20mau%20tanya-tanya." target="_blank" rel="noopener">Hubungi CS</a></li>
+        <li><a href="#cek-status">Cek Status Pesanan</a></li>
+        <li><a href="#">Syarat &amp; Ketentuan</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Ikuti Kami</h5>
+      <ul>
+        <li><a href="https://instagram.com/im.exfb" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://tiktok.com/@.extwenty" target="_blank" rel="noopener">TikTok</a></li>
+        <li><a href="https://wa.me/6289519781533" target="_blank" rel="noopener">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Luxe Point. All rights reserved.</span>
+    <span>Bukan situs afiliasi resmi Roblox Corporation.</span>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/6289519781533?text=Halo%20Luxe%20Point%2C%20saya%20mau%20tanya-tanya." target="_blank" rel="noopener" aria-label="Hubungi CS via WhatsApp">
+  <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4.02 8.38 4.02 15c0 2.32.65 4.48 1.78 6.33L3 29l7.86-2.75A11.9 11.9 0 0 0 16.02 27C22.64 27 28 21.62 28 15S22.64 3 16.02 3Zm0 21.7c-1.98 0-3.83-.55-5.4-1.5l-.39-.23-4.66 1.63 1.55-4.53-.25-.4A9.63 9.63 0 0 1 5.4 15c0-5.86 4.76-10.62 10.62-10.62S26.64 9.14 26.64 15 21.88 24.7 16.02 24.7Zm5.83-7.95c-.32-.16-1.9-.94-2.19-1.04-.29-.11-.5-.16-.72.16-.21.32-.82 1.04-1 1.25-.19.21-.37.24-.69.08-.32-.16-1.34-.49-2.55-1.57-.94-.84-1.58-1.87-1.76-2.19-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.74-.99-2.38-.26-.62-.53-.54-.72-.55-.19-.01-.4-.01-.61-.01-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.65s1.14 3.08 1.3 3.29c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.52 1.81.67.76.24 1.45.21 2 .13.61-.09 1.9-.78 2.17-1.53.27-.75.27-1.4.19-1.53-.08-.13-.29-.21-.61-.37Z"/></svg>
+</a>
+
+<div class="order-bar" id="orderBar">
+  <div class="order-bar-inner">
+    <div class="order-info">
+      <span class="rb-amount" id="obAmount">0 Robux</span>
+      <span class="rb-price" id="obPrice">Rp 0</span>
+    </div>
+    <input type="text" id="obUsername" placeholder="Username Roblox kamu">
+    <div class="promo-box">
+      <div class="promo-label">Kode Promo</div>
+      <div class="promo-row">
+        <input type="text" id="obPromo" placeholder="Masukkan kode promo" autocomplete="off">
+        <button type="button" class="promo-apply-btn" id="obPromoApply">Terapkan</button>
+      </div>
+      <div class="promo-msg" id="obPromoMsg"></div>
+    </div>
+    <div class="order-actions">
+      <button class="btn btn-outline" id="obCancel">Batal</button>
+      <a class="btn btn-primary" id="obConfirm" href="#">Lanjut ke WhatsApp →</a>
+    </div>
+  </div>
+</div>
+
+<div class="order-bar" id="orderBar">
+  <div class="order-bar-inner">
+    <div class="order-info">
+      <span class="rb-amount" id="obAmount">0 Robux</span>
+      <span class="rb-price" id="obPrice">Rp 0</span>
+    </div>
+    <input type="text" id="obUsername" placeholder="Username Roblox kamu">
+    <div class="promo-box">
+      <div class="promo-label">Kode Promo</div>
+      <div class="promo-row">
+        <input type="text" id="obPromo" placeholder="Masukkan kode promo" autocomplete="off">
+        <button type="button" class="promo-apply-btn" id="obPromoApply">Terapkan</button>
+      </div>
+      <div class="promo-msg" id="obPromoMsg"></div>
+    </div>
+    <div class="order-actions">
+      <button class="btn btn-outline" id="obCancel">Batal</button>
+      <a class="btn btn-primary" id="obConfirm" href="#">Lanjut ke WhatsApp →</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const LUXE_SUPABASE_URL = 'sb_publishable_S-E1BYQXpa-IYO_VQtI7eQ_mE0JEnIb';
+  const LUXE_SUPABASE_KEY = 'sb_publishable_aulkO9GJvMMl1YUayD1N8w_jwJuiFOK';
+  const WA_NUMBER = '6289519781533';
+  const luxeSupabase = window.supabase.createClient(LUXE_SUPABASE_URL, LUXE_SUPABASE_KEY);
+</script>
+<script>
+  // ====== ROBUX GAMEPASS (dikembalikan) ======
+  let gamepassProducts=[];
+  let selectedGamepass=null;
+  let gamepassPromos=[];
+  let gamepassPromo=null;
+  let gamepassPromoApplied=false;
+  const orderBar=document.getElementById('orderBar');
+  const obAmount=document.getElementById('obAmount');
+  const obPrice=document.getElementById('obPrice');
+  const obUsername=document.getElementById('obUsername');
+  const obPromo=document.getElementById('obPromo');
+  const obPromoApply=document.getElementById('obPromoApply');
+  const obPromoMsg=document.getElementById('obPromoMsg');
+  const obConfirm=document.getElementById('obConfirm');
+  const gamepassGrid=document.getElementById('gamepassGrid');
+  const gamepassLoadMsg=document.getElementById('gamepassLoadMsg');
+
+  function renderGamepassProducts(){
+    if(!gamepassGrid)return;
+    gamepassGrid.innerHTML='';
+    if(!gamepassProducts.length){
+      gamepassLoadMsg.textContent='Paket Gamepass belum tersedia. Tambahkan produk Gamepass dari dashboard admin.';
+      return;
+    }
+    gamepassLoadMsg.textContent='';
+    gamepassProducts.forEach(p=>{
+      const card=document.createElement('div');
+      card.className='price-card';
+      card.dataset.id=p.id;
+      card.dataset.amount=p.robux;
+      card.dataset.price=p.price;
+      card.innerHTML=(p.badge?`<div class="badge">${escapeHtml(p.badge)}</div>`:'')+
+        `<div class="rb-amount">${Number(p.robux).toLocaleString('id-ID')} <span>Robux</span></div>`+
+        (p.old_price?`<div class="rb-old">${formatRupiah(p.old_price)}</div>`:'')+
+        `<div class="rb-price">${formatRupiah(p.price)}</div>`+
+        `<div class="rb-select">Order Product →</div>`;
+      gamepassGrid.appendChild(card);
+      card.addEventListener('click',()=>selectGamepass(card));
+    });
+  }
+
+  async function loadGamepassProducts(){
+    const {data,error}=await luxeSupabase.from('products').select('*').eq('active',true).eq('method','gamepass').order('sort_order').order('robux');
+    if(error){console.warn('Gamepass products:',error.message);gamepassLoadMsg.textContent='Gagal memuat paket Gamepass.';return;}
+    gamepassProducts=data||[];
+    renderGamepassProducts();
+  }
+
+  function resetGamepassPromo(){
+    gamepassPromoApplied=false; gamepassPromo=null;
+    if(obPromo)obPromo.value='';
+    if(obPromo)obPromo.classList.remove('applied');
+    if(obPromoMsg){obPromoMsg.textContent='';obPromoMsg.className='promo-msg';}
+  }
+
+  function updateGamepassWaLink(){
+    if(!selectedGamepass||!obConfirm)return;
+    const username=obUsername?.value.trim()||'(belum diisi)';
+    const base=Number(selectedGamepass.price);
+    const discount=gamepassPromoApplied&&gamepassPromo?Math.round(base*Number(gamepassPromo.discount_percent)/100):0;
+    const finalPrice=Math.max(0,base-discount);
+    const promoLine=gamepassPromoApplied&&gamepassPromo?`\nKode Promo: ${gamepassPromo.code} (diskon ${gamepassPromo.discount_percent}%)\nHarga Normal: ${formatRupiah(base)}`:'';
+    obConfirm.href=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Halo Luxe Point, saya ingin order ${selectedGamepass.robux} Robux via Gamepass (${formatRupiah(finalPrice)}).${promoLine}\nUsername Roblox: ${username}`)}`;
+  }
+
+  function selectGamepass(card){
+    const amount=Number(card.dataset.amount), price=Number(card.dataset.price);
+    selectedGamepass=gamepassProducts.find(p=>String(p.id)===String(card.dataset.id));
+    resetGamepassPromo();
+    if(amount>storeStock){
+      obAmount.textContent=amount.toLocaleString('id-ID')+' Robux';
+      obPrice.textContent='Cek stok';
+      obConfirm.textContent='Tanya Stok via WhatsApp →';
+      obConfirm.href=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Halo Luxe Point, saya mau tanya stok untuk '+amount.toLocaleString('id-ID')+' Robux.')}`;
+      orderBar.classList.add('show');
+      return;
+    }
+    document.querySelectorAll('#gamepassGrid .price-card').forEach(c=>c.classList.remove('selected'));
+    card.classList.add('selected');
+    obAmount.textContent=amount.toLocaleString('id-ID')+' Robux';
+    obPrice.textContent=formatRupiah(price);
+    obConfirm.textContent='Lanjut ke WhatsApp →';
+    updateGamepassWaLink();
+    orderBar.classList.add('show');
+  }
+
+  obUsername?.addEventListener('input',updateGamepassWaLink);
+  obPromoApply?.addEventListener('click',()=>{
+    if(!selectedGamepass){obPromoMsg.textContent='Pilih paket Gamepass dulu sebelum memakai kode promo.';obPromoMsg.className='promo-msg err';return;}
+    const code=obPromo.value.trim().toUpperCase();
+    const matched=gamepassPromos.find(p=>String(p.code).toUpperCase()===code && Number(selectedGamepass.price)>=Number(p.min_purchase||0) && ['all','gamepass'].includes(String(p.allowed_method||'all')) && (!p.max_uses||Number(p.usage_count||0)<Number(p.max_uses)));
+    if(!matched){gamepassPromoApplied=false;gamepassPromo=null;obPromo.classList.remove('applied');obPromoMsg.textContent='Kode promo tidak valid atau sudah kedaluwarsa.';obPromoMsg.className='promo-msg err';updateGamepassWaLink();return;}
+    gamepassPromoApplied=true;gamepassPromo=matched;obPromo.classList.add('applied');
+    const finalPrice=Math.max(0,Number(selectedGamepass.price)-Math.round(Number(selectedGamepass.price)*Number(matched.discount_percent)/100));
+    obPrice.textContent=formatRupiah(finalPrice);
+    obPromoMsg.textContent=`Kode promo berhasil dipakai! Diskon ${matched.discount_percent}% diterapkan.`;obPromoMsg.className='promo-msg ok';
+    updateGamepassWaLink();
+  });
+  obPromo?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();obPromoApply.click();}});
+
+  obConfirm?.addEventListener('click',async e=>{
+    if(!selectedGamepass)return;
+    e.preventDefault();
+    const username=obUsername.value.trim();
+    if(!username){alert('Masukkan username Roblox terlebih dahulu.');obUsername.focus();return;}
+    const old=obConfirm.textContent; obConfirm.textContent='Menyimpan order...'; obConfirm.style.pointerEvents='none';
+    const {data,error}=await luxeSupabase.rpc('create_public_order',{p_product_id:Number(selectedGamepass.id),p_roblox_username:username,p_promo_code:gamepassPromoApplied&&gamepassPromo?gamepassPromo.code:null});
+    obConfirm.style.pointerEvents=''; obConfirm.textContent=old;
+    if(error){alert(error.message||'Order Gamepass gagal dibuat.');return;}
+    const orderCode=data?.order_code||data?.[0]?.order_code;
+    if(!orderCode){alert('Order tersimpan tetapi Order ID tidak ditemukan.');return;}
+    localStorage.setItem('luxe_last_order_code',orderCode);
+    const finalPrice=Number(data?.price||data?.[0]?.price||selectedGamepass.price);
+    const msg=`Halo Luxe Point, saya ingin order Robux via Gamepass.\nOrder ID: ${orderCode}\nUsername Roblox: ${username}\nJumlah Robux: ${Number(selectedGamepass.robux).toLocaleString('id-ID')} Robux\nTotal: ${formatRupiah(finalPrice)}${gamepassPromoApplied&&gamepassPromo?`\nKode Promo: ${gamepassPromo.code}`:''}`;
+    window.location.assign(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
+  });
+
+  document.getElementById('obCancel')?.addEventListener('click',()=>{
+    document.querySelectorAll('#gamepassGrid .price-card').forEach(c=>c.classList.remove('selected'));
+    selectedGamepass=null; resetGamepassPromo(); orderBar.classList.remove('show'); obConfirm.textContent='Lanjut ke WhatsApp →';
+  });
+
+  document.querySelectorAll('[data-method-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+    const target=btn.dataset.methodTab;
+    document.querySelectorAll('[data-method-tab]').forEach(b=>b.classList.toggle('active',b===btn));
+    const gp=document.getElementById('gamepassPanel'), instant=document.getElementById('instantPanel');
+    if(target==='gamepass'){gp.style.display='block';instant.style.display='none';}
+    else {gp.style.display='none';instant.style.display='block';}
+    if(target==='instant')orderBar.classList.remove('show');
+  }));
+
+  // ====== ROBUX INSTANT VIA USERNAME ======
+  let storeStock=0, pricing={rate_per_10:1500,tax_percent:11,admin_fee:100};
+  let activePromos=[], activePromo=null, promoApplied=false;
+  const stockEl=document.getElementById('stockAmount');
+  const instantUsername=document.getElementById('instantUsername');
+  const instantRobux=document.getElementById('instantRobux');
+  const instantWhatsapp=document.getElementById('instantWhatsapp');
+  const instantPromo=document.getElementById('instantPromo');
+  const instantPromoApply=document.getElementById('instantPromoApply');
+  const instantPromoMsg=document.getElementById('instantPromoMsg');
+  const instantBuy=document.getElementById('instantBuy');
+  function formatRupiah(n){return 'Rp '+Number(n||0).toLocaleString('id-ID');}
+  function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  async function loadStoreSettings(){
+    const {data,error}=await luxeSupabase.from('store_settings').select('stock,rate_per_10,tax_percent,admin_fee').eq('id',1).maybeSingle();
+    if(error){console.warn('Setting toko:',error.message);return;}
+    storeStock=Number(data?.stock||0); pricing.rate_per_10=Number(data?.rate_per_10||1500); pricing.tax_percent=Number(data?.tax_percent??11); pricing.admin_fee=Number(data?.admin_fee??100);
+    if(stockEl)stockEl.textContent=storeStock.toLocaleString('id-ID')+' Robux'; updateInstantSummary();
+  }
+  function calcInstant(){
+    const amount=Math.floor(Number(instantRobux?.value||0));
+    const base=amount>=10&&amount%10===0?(amount/10)*pricing.rate_per_10:0;
+    const discount=promoApplied&&activePromo?Math.round(base*Number(activePromo.discount_percent)/100):0;
+    const taxable=Math.max(0,base-discount);
+    const tax=Math.round(taxable*pricing.tax_percent/100);
+    const total=taxable+tax+pricing.admin_fee;
+    return {amount,base,discount,tax,total};
+  }
+  function updateInstantSummary(){
+    const c=calcInstant();
+    document.getElementById('sumSubtotal').textContent=formatRupiah(c.base);
+    document.getElementById('sumDiscount').textContent=c.discount?'- '+formatRupiah(c.discount):'Rp 0';
+    document.getElementById('sumTax').textContent=formatRupiah(c.tax);
+    document.getElementById('sumAdmin').textContent=formatRupiah(pricing.admin_fee);
+    document.getElementById('sumTotal').textContent=formatRupiah(c.total);
+    document.getElementById('instantPricePreview').textContent=formatRupiah(c.total);
+    const valid=c.amount>=10&&c.amount%10===0;
+    const msg=document.getElementById('instantAmountMsg');
+    if(!valid)msg.textContent='Minimal 10 Robux dan jumlah harus kelipatan 10.';
+    else if(c.amount>storeStock)msg.textContent='Stok tidak mencukupi untuk jumlah ini.';
+    else msg.textContent='Harga dihitung otomatis dari tarif toko.';
+    msg.style.color=valid&&c.amount<=storeStock?'var(--text-faint)':'#fb7185';
+    instantBuy.disabled=!valid||c.amount>storeStock;
+  }
+  instantRobux.addEventListener('input',updateInstantSummary);
+  instantPromoApply.addEventListener('click',()=>{
+    const code=instantPromo.value.trim().toUpperCase();
+    if(!code){promoApplied=false;activePromo=null;instantPromoMsg.textContent='Masukkan kode promo.';updateInstantSummary();return;}
+    const matched=activePromos.find(p=>String(p.code).toUpperCase()===code && calcInstant().base>=Number(p.min_purchase||0) && ['all','instant_username'].includes(String(p.allowed_method||'all')) && (!p.max_uses||Number(p.usage_count||0)<Number(p.max_uses)));
+    if(!matched){promoApplied=false;activePromo=null;instantPromoMsg.textContent='Kode promo tidak valid atau sudah kedaluwarsa.';instantPromoMsg.style.color='#fb7185';updateInstantSummary();return;}
+    promoApplied=true;activePromo=matched;instantPromoMsg.textContent='Kode promo berhasil diterapkan: diskon '+matched.discount_percent+'%.';instantPromoMsg.style.color='var(--success)';updateInstantSummary();
+  });
+  instantPromo.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();instantPromoApply.click();}});
+  async function loadActivePromo(){
+    const now=new Date().toISOString();
+    const {data,error}=await luxeSupabase.from('promos').select('code,discount_percent,starts_at,expires_at,min_purchase,max_uses,allowed_method').eq('active',true).lte('starts_at',now).gte('expires_at',now).order('expires_at',{ascending:true});
+    if(error){console.warn('Promo:',error.message);return;} activePromos=data||[]; gamepassPromos=activePromos.slice();
+  }
+  instantBuy.addEventListener('click',async()=>{
+    const username=instantUsername.value.trim(), whatsapp=instantWhatsapp.value.trim().replace(/[^0-9+]/g,'');
+    const c=calcInstant();
+    if(!username){alert('Masukkan username Roblox terlebih dahulu.');instantUsername.focus();return;}
+    if(c.amount<10||c.amount%10!==0){alert('Jumlah Robux minimal 10 dan harus kelipatan 10.');return;}
+    if(c.amount>storeStock){alert('Stok Robux tidak mencukupi.');return;}
+    instantBuy.disabled=true; instantBuy.textContent='Menyimpan Order...';
+    const {data,error}=await luxeSupabase.rpc('create_instant_order',{p_robux_amount:c.amount,p_roblox_username:username,p_customer_whatsapp:whatsapp,p_promo_code:promoApplied&&activePromo?activePromo.code:null});
+    instantBuy.disabled=false; instantBuy.textContent='Beli Sekarang →';
+    if(error){alert(error.message||'Order gagal dibuat.');updateInstantSummary();return;}
+    const o=data?.[0]||data; const code=o?.order_code;
+    if(!code){alert('Order tersimpan tetapi Order ID tidak ditemukan.');return;}
+    localStorage.setItem('luxe_last_order_code',code);
+    const msg=`Halo Luxe Point, saya ingin order Robux Instant via Username.\nOrder ID: ${code}\nUsername Roblox: ${username}\nJumlah Robux: ${c.amount.toLocaleString('id-ID')} Robux\nHarga Dasar: ${formatRupiah(o.subtotal??c.base)}\nDiskon: ${formatRupiah(o.discount_amount??c.discount)}\nPPN ${pricing.tax_percent}%: ${formatRupiah(o.tax_amount??c.tax)}\nBiaya Admin: ${formatRupiah(o.admin_fee??pricing.admin_fee)}\nTOTAL: ${formatRupiah(o.price??c.total)}${whatsapp ? `\nNomor WhatsApp Customer: ${whatsapp}` : ''}`;
+    window.location.assign(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`);
+  });
+  Promise.resolve().then(loadStoreSettings);
+  Promise.resolve().then(loadActivePromo);
+  Promise.resolve().then(loadGamepassProducts);
+
+  // mobile nav
+  const burger = document.getElementById('burger');
+  const navLinks = document.querySelector('.nav-links');
+  burger.addEventListener('click', () => {
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.position = 'absolute';
+    navLinks.style.top = '64px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.background = 'rgba(10,10,19,0.98)';
+    navLinks.style.padding = '20px 24px';
+    navLinks.style.borderBottom = '1px solid var(--border)';
+  });
+  // fix: tutup menu mobile otomatis setelah link diklik
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => { navLinks.style.display = 'none'; });
+  });
+
+  // tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.tab;
+      document.querySelectorAll('[data-tab-panel]').forEach(panel => {
+        panel.style.display = panel.dataset.tabPanel === target ? 'grid' : 'none';
+      });
+      // fix: bersihkan pilihan lama supaya order bar tidak nyangkut ke paket dari tab sebelumnya
+      document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+      orderBar.classList.remove('show');
+    });
+  });
+
+  // ====== RATING TERKAIT ORDER ======
+  const testiForm=document.getElementById('testiForm');
+  const tfOrderId=document.getElementById('tfOrderId');
+  const tfProduct=document.getElementById('tfProduct');
+  const tfProductMsg=document.getElementById('tfProductMsg');
+  let verifiedReviewOrder='';
+
+  async function verifyReviewOrder(){
+    const orderId=tfOrderId.value.trim().toUpperCase();
+    if(!orderId){tfProduct.value='';tfProductMsg.textContent='Masukkan Order ID terlebih dahulu.';return;}
+    tfProductMsg.textContent='Memeriksa Order ID...';
+    const {data,error}=await luxeSupabase.rpc('get_public_order_status',{p_order_code:orderId});
+    if(error || !data?.length){verifiedReviewOrder='';tfProduct.value='';tfProductMsg.textContent='❌ Order ID tidak ditemukan.';return;}
+    const order=data[0];
+    if(String(order.status).toLowerCase()!=='completed'){
+      verifiedReviewOrder='';tfProduct.value='';tfProductMsg.textContent='❌ Order belum selesai. Rating hanya bisa diberikan setelah order completed.';return;
+    }
+    verifiedReviewOrder=orderId;
+    tfProduct.value=order.product_name || `${order.robux_amount} Robux`;
+    tfProductMsg.textContent='✓ Order terverifikasi. Produk diambil otomatis dari pesanan.';
+  }
+  tfOrderId.addEventListener('blur',verifyReviewOrder);
+  tfOrderId.addEventListener('change',verifyReviewOrder);
+
+  if(testiForm){
+    testiForm.addEventListener('submit',async e=>{
+      e.preventDefault();
+      const orderId=tfOrderId.value.trim().toUpperCase();
+      const name=document.getElementById('tfName').value.trim();
+      const rating=Number(document.getElementById('tfRating').value);
+      const review=document.getElementById('tfReview').value.trim();
+      if(!orderId||!name||!rating||!review){alert('Lengkapi Order ID, nama, rating, dan ulasan.');return;}
+      if(verifiedReviewOrder!==orderId){await verifyReviewOrder();if(verifiedReviewOrder!==orderId)return;}
+      const btn=testiForm.querySelector('button[type="submit"]'); btn.disabled=true; btn.textContent='Mengirim...';
+      const {error}=await luxeSupabase.rpc('submit_order_rating',{p_order_code:orderId,p_name:name,p_product:tfProduct.value,p_rating:rating,p_review:review});
+      btn.disabled=false; btn.textContent='Kirim Rating & Testimoni';
+      if(error){alert(error.message||'Rating gagal dikirim.');return;}
+      document.getElementById('tfSuccess').style.display='block'; testiForm.reset(); tfProduct.value=''; verifiedReviewOrder='';
+      tfProductMsg.textContent='Produk akan terisi otomatis setelah Order ID diverifikasi.';
+      setTimeout(()=>document.getElementById('tfSuccess').style.display='none',5000);
+    });
+  }
+
+  async function loadApprovedRatings(){
+    const box=document.getElementById('approvedRatings'); if(!box)return;
+    const {data,error}=await luxeSupabase.from('order_ratings').select('name,product,rating,review,created_at').eq('approved',true).order('created_at',{ascending:false}).limit(6);
+    if(error||!data?.length){box.innerHTML='';return;}
+    box.innerHTML=data.map(r=>`<div class="testi-card"><div class="stars">${'★'.repeat(Number(r.rating))}${'☆'.repeat(5-Number(r.rating))}</div><p>"${escapeHtml(r.review)}"</p><div class="testi-who"><div class="testi-avatar"></div><div><b>${escapeHtml(r.name)}</b><span>${escapeHtml(r.product)}</span></div></div></div>`).join('');
+  }
+
+  // faq accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-a').style.maxHeight = null; });
+      if(!isOpen){
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ====== TRACKING + INVOICE PESANAN PUBLIK ======
+  const trackBtn=document.getElementById('trackBtn');
+  const trackInput=document.getElementById('trackOrderId');
+  const trackResult=document.getElementById('trackResult');
+  const trackError=document.getElementById('trackError');
+  const invoiceWrap=document.getElementById('invoiceWrap');
+  const invoiceExpiry=document.getElementById('invoiceExpiry');
+  const statusLabels={pending:'Menunggu Pembayaran',paid:'Pembayaran Diterima',processing:'Sedang Diproses',completed:'Selesai / Terkirim',cancelled:'Dibatalkan'};
+  let currentInvoiceOrder=null, invoiceTimer=null;
+  function renderTrack(o){
+    document.getElementById('trackStatus').textContent=statusLabels[o.status]||o.status;
+    document.getElementById('trackCode').textContent=o.order_code;
+    document.getElementById('trackUsername').textContent=o.roblox_username;
+    document.getElementById('trackRobux').textContent=Number(o.robux_amount||0).toLocaleString('id-ID')+' Robux';
+    document.getElementById('trackPrice').textContent=formatRupiah(o.price);
+    document.getElementById('trackTax').textContent=formatRupiah(o.tax_amount||0);
+    document.getElementById('trackAdmin').textContent=formatRupiah(o.admin_fee||0);
+    document.getElementById('trackPromo').textContent=o.promo_code||'-';
+    document.getElementById('trackCreated').textContent=new Date(o.created_at).toLocaleString('id-ID');
+    renderInvoice(o);
+    trackResult.classList.add('show'); trackError.style.display='none';
+  }
+  function renderInvoice(o){
+    clearInterval(invoiceTimer); currentInvoiceOrder=o;
+    const created=new Date(o.created_at).getTime(); const expires=created+(48*60*60*1000);
+    const original=Number(o.original_price ?? o.price ?? 0);
+    const discount=Number(o.discount_amount ?? Math.max(0,original-Number(o.price||0)));
+    document.getElementById('invoiceCode').textContent=o.order_code||'-';
+    document.getElementById('invoiceProduct').textContent=o.product_name||`${o.robux_amount||0} Robux`;
+    document.getElementById('invoiceUsername').textContent=o.roblox_username||'-';
+    document.getElementById('invoiceRobux').textContent=Number(o.robux_amount||0).toLocaleString('id-ID')+' Robux';
+    document.getElementById('invoiceOriginal').textContent=formatRupiah(original);
+    document.getElementById('invoiceDiscount').textContent=discount>0?'- '+formatRupiah(discount):'Rp 0';
+    document.getElementById('invoiceTax').textContent=formatRupiah(o.tax_amount||0);
+    document.getElementById('invoiceAdmin').textContent=formatRupiah(o.admin_fee||0);
+    document.getElementById('invoiceTotal').textContent=formatRupiah(o.price);
+    document.getElementById('invoiceStatus').textContent=statusLabels[o.status]||o.status;
+    invoiceWrap.classList.add('show');
+    function tick(){
+      const left=expires-Date.now();
+      if(left<=0){clearInterval(invoiceTimer);invoiceWrap.classList.remove('show');invoiceExpiry.textContent='Invoice sudah kedaluwarsa.';trackError.textContent='Invoice untuk order ini sudah melewati 2 hari dan tidak dapat diakses lagi.';trackError.style.display='block';return;}
+      const totalSec=Math.floor(left/1000), days=Math.floor(totalSec/86400), hours=Math.floor((totalSec%86400)/3600), mins=Math.floor((totalSec%3600)/60), secs=totalSec%60;
+      invoiceExpiry.textContent=`⏳ Invoice tersedia ${days}h ${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+      invoiceExpiry.className='invoice-expiry'+(left<6*60*60*1000?' danger':left<24*60*60*1000?' warn':'');
+    }
+    tick(); invoiceTimer=setInterval(tick,1000);
+  }
+  function printInvoice(){
+    if(!currentInvoiceOrder)return;
+    const o=currentInvoiceOrder; const expires=new Date(new Date(o.created_at).getTime()+48*60*60*1000);
+    if(Date.now()>=expires.getTime()){alert('Invoice sudah kedaluwarsa setelah 2 hari.');return;}
+    const original=Number(o.original_price ?? o.price ?? 0); const discount=Number(o.discount_amount ?? Math.max(0,original-Number(o.price||0)));
+    const w=window.open('','_blank','width=760,height=850'); if(!w){alert('Izinkan popup browser untuk mencetak invoice.');return;}
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${esc(o.order_code)}</title><style>body{font-family:Arial,sans-serif;padding:36px;color:#111}h1{margin:0 0 6px}p{color:#555}.head{display:flex;justify-content:space-between;border-bottom:2px solid #222;padding-bottom:18px;margin-bottom:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.item{padding:12px;border:1px solid #ddd;border-radius:8px}.item span{display:block;color:#777;font-size:12px;margin-bottom:4px}.total{margin-top:18px;padding:16px;background:#f3f3f3;border-radius:8px;font-size:20px;font-weight:700}.note{margin-top:28px;font-size:12px;color:#777}@media print{body{padding:0}}</style></head><body><div class="head"><div><h1>Luxe Point</h1><p>Invoice Pesanan</p></div><div><b>${esc(o.order_code)}</b><p>${new Date(o.created_at).toLocaleString('id-ID')}</p></div></div><div class="grid"><div class="item"><span>Produk</span><b>${esc(o.product_name || (o.robux_amount || 0) + ' Robux')}</b></div><div class="item"><span>Username Roblox</span><b>${esc(o.roblox_username||'-')}</b></div><div class="item"><span>Jumlah Robux</span><b>${Number(o.robux_amount||0).toLocaleString('id-ID')} Robux</b></div><div class="item"><span>Promo</span><b>${esc(o.promo_code||'-')}</b></div><div class="item"><span>Harga Normal</span><b>${formatRupiah(original)}</b></div><div class="item"><span>Diskon</span><b>${discount>0?'- '+formatRupiah(discount):'Rp 0'}</b></div><div class="item"><span>PPN</span><b>${formatRupiah(o.tax_amount||0)}</b></div><div class="item"><span>Biaya Admin</span><b>${formatRupiah(o.admin_fee||0)}</b></div><div class="item"><span>Status</span><b>${esc(statusLabels[o.status]||o.status)}</b></div></div><div class="total">Total Dibayar: ${formatRupiah(o.price)}</div><p class="note">Invoice ini hanya tersedia selama 48 jam sejak order dibuat. Setelah itu invoice tidak dapat diakses kembali.</p><script>window.onload=()=>window.print();<\/script></body></html>`); w.document.close();
+  }
+  document.getElementById('printInvoice').addEventListener('click',printInvoice);
+  trackBtn.addEventListener('click',async()=>{
+    const code=trackInput.value.trim(); if(!code){trackError.textContent='Masukkan Order ID terlebih dahulu.';trackError.style.display='block';trackResult.classList.remove('show');invoiceWrap.classList.remove('show');return;}
+    trackBtn.disabled=true; trackBtn.textContent='Mengecek...';
+    const {data,error}=await luxeSupabase.rpc('get_public_order_status',{p_order_code:code});
+    trackBtn.disabled=false; trackBtn.textContent='Cek Status →';
+    if(error){trackError.textContent='Gagal mengecek status. Coba lagi.';trackError.style.display='block';trackResult.classList.remove('show');invoiceWrap.classList.remove('show');return;}
+    const order=data?.[0];
+    if(!order){trackError.textContent='Order ID tidak ditemukan atau invoice sudah kedaluwarsa.';trackError.style.display='block';trackResult.classList.remove('show');invoiceWrap.classList.remove('show');return;}
+    renderTrack(order);
+  });
+  trackInput.addEventListener('keydown',e=>{if(e.key==='Enter')trackBtn.click();});
+  Promise.all([loadStoreSettings(),loadActivePromo(),loadApprovedRatings()]);
+</script>
+
+</body>
+</html>
